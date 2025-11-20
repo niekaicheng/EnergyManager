@@ -1,0 +1,11 @@
+services:
+  emanager:
+    build: .
+    volumes:
+      - .:/app
+    # --- 在这里添加以下 2 行 ---
+    environment:
+      - TZ=America/Toronto
+    # --- 添加结束 ---
+    stdin_open: true
+    tty: true

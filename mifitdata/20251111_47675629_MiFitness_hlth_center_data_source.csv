@@ -1,0 +1,6 @@
+Uid,Sid,Identifier,Model,Name,Alias,Status,CreateTime,UpdateTime
+47675629,2018008174,2018008174,miwear.watch.o66nfc,Xiaomi Smart Band 10 NFC   ,,2,1756548484423180437,1757170078985646010
+47675629,786882759,786882759,miwear.watch.m66,Xiaomi Smart Band 8   ,,1,1756182332053668586,1756182332053668720
+47675629,838001562,838001562,miwear.watch.n66cn,Xiaomi Smart Band 9   ,,2,1754655775290219514,1754796197259956540
+47675629,xiaomiwear_app_manually,xiaomiwear_app_manually,mihlth.xiaomi.fitness.manually,Add data,,2,1754655755158589881,1754655755158589973
+47675629,xiaomiwear_app,xiaomiwear_app,mihlth.xiaomi.fitness.app,Mi Fitness,,2,1754655755157774857,1754655755157774944

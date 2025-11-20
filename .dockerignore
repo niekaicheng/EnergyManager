@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 数据库文件 (我们使用 volume，绝不应将其构建到镜像中)
+emanager.db*
+
+# 数据文件 (同样使用 volume)
+mifitdata/
+*.csv
+*.pdf
+
+# 配置文件
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 文档
+README.md
+GEMINI.md

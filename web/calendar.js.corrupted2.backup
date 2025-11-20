@@ -1,0 +1,146 @@
+// ==================== CALENDAR FUNCTIONALITY ====================
+
+// Global calendar instance
+let calendar = null;
+let calendarEvents = [];
+
+// Initialize calendar when journal page is loaded
+async function renderJournal(days = 90) {
+    try {
+        // Fetch events for more days
+        const events = await fetchEvents(days);
+        calendarEvents = events;
+        console.log(`Loaded ${events.length} events for ${days} days`);
+
+        // Initialize or update calendar
+        if (!calendar) {
+            initializeCalendar();
+        } else {
+            updateCalendarEvents(events);
+        }
+    } catch (error) {
+        console.error('Error loading journal:', error);
+    }
+}
+
+// Initialize FullCalendar
+function initializeCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) return;
+
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridDay',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: ''
+        },
+        editable: true,
+        droppable: true,
+        eventResizable: true,
+        height: 'auto',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '24:00:00',
+        allDaySlot: false,
+
+        events: transformEventsToCalendar(calendarEvents),
+
+        function transformEventsToCalendar(events) {
+        return events.map(event => {
+            const start = new Date(event.timestamp_start);
+            const end = new Date(start.getTime() + event.duration_minutes * 60000);
+
+            const stateClass = event.key_state ?
+                'event-' + event.key_state.toLowerCase().replace(/\s+/g, '-').replace('internal-friction', 'friction') :
+                'event-routine';
+
+            return {
+                id: event.event_id,
+                title: event.activity + (event.energy_cost ? ` (${event.energy_cost >= 0 ? '+' : ''}${event.energy_cost})` : ''),
+                start: start,
+                end: end,
+                className: stateClass,
+                extendedProps: {
+                    goal_name: event.goal_name,
+                    key_state: event.key_state,
+                    energy_cost: event.energy_cost,
+                    duration_minutes: event.duration_minutes,
+                    physical_score: event.physical_score,
+                    mental_score: event.mental_score,
+                    emotional_score: event.emotional_score,
+                    notes: event.notes
+                }
+            };
+        });
+    }
+
+function updateCalendarEvents(events) {
+            if (!calendar) return;
+            const calendarEvents = transformEventsToCalendar(events);
+            calendar.removeAllEvents();
+            calendar.addEventSource(calendarEvents);
+        }
+
+function changeCalendarView(viewName, buttonEl) {
+            if (!calendar) return;
+
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            if (buttonEl) buttonEl.classList.add('active');
+
+            calendar.changeView(viewName);
+        }
+
+async function updateEventTime(eventId, newTimestamp) {
+            const response = await fetch(`${API_BASE}/api/events/${eventId}/time`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ timestamp_start: newTimestamp })
+            });
+
+            if (!response.ok) throw new Error('Failed to update event time');
+            return await response.json();
+        }
+
+// Override showLogEventModal
+const originalShowLogEventModal = showLogEventModal;
+    showLogEventModal = function () {
+        originalShowLogEventModal();
+
+        const now = new Date();
+        document.getElementById('event-date').value = now.toISOString().split('T')[0];
+        document.getElementById('event-time').value = now.toTimeString().slice(0, 5);
+    };
+
+    // Override logEvent
+    const originalLogEvent = logEvent;
+    logEvent = async function (event) {
+        event.preventDefault();
+
+        const dateValue = document.getElementById('event-date').value;
+        const timeValue = document.getElementById('event-time').value;
+        const timestamp = new Date(`${dateValue}T${timeValue}`).toISOString();
+
+        const eventData = {
+            activity: document.getElementById('event-activity').value,
+            duration_minutes: parseInt(document.getElementById('event-duration').value),
+            goal_id: document.getElementById('event-goal').value || null,
+            key_state: document.getElementById('event-state').value,
+            physical_score: parseInt(document.getElementById('event-physical').value),
+            mental_score: parseInt(document.getElementById('event-mental').value),
+            emotional_score: parseInt(document.getElementById('event-emotional').value),
+            notes: document.getElementById('event-notes').value,
+            timestamp_start: timestamp
+        };
+
+        try {
+            await createEvent(eventData);
+            closeModal('log-event-modal');
+            document.getElementById('log-event-form').reset();
+            if (currentPage === 'journal') {
+                await loadJournal(90);
+            }
+            showNotification('Event logged successfully!', 'success');
+        } catch (error) {
+            showNotification('Error: ' + error.message, 'error');
+        }
+    };

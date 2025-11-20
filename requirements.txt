@@ -1,0 +1,6 @@
+click
+matplotlib
+seaborn
+pandas
+flask
+flask-cors

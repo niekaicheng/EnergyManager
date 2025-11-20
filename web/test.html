@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Manager - 诊断测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e293b;
+            color: white;
+        }
+
+        .test-section {
+            background: #334155;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success {
+            color: #10b981;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #4f46e5;
+        }
+
+        pre {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 Energy Manager 诊断测试</h1>
+
+    <div class="test-section">
+        <h2>1. API连接测试</h2>
+        <button onclick="testAPI()">测试API连接</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. 数据加载测试</h2>
+        <button onclick="testGoals()">加载Goals</button>
+        <button onclick="testEvents()">加载Events</button>
+        <button onclick="testHealth()">加载Health</button>
+        <div id="data-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. 文件上传测试</h2>
+        <input type="file" id="test-file" accept=".csv">
+        <button onclick="testUpload()">测试上传</button>
+        <div id="upload-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. 主界面</h2>
+        <a href="/" style="color: #60a5fa;">返回主界面</a>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<p>测试中...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/goals`);
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<p class="success">✅ API连接成功！</p>
+                                       <p>找到 ${data.length} 个Goals</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">❌ API返回错误: ${response.status}</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">❌ 连接失败: ${error.message}</p>`;
+            }
+        }
+
+        async function testGoals() {
+            const result = document.getElementById('data-result');
+            result.innerHTML = '<p>加载Goals...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/goals`);
+                const data = await response.json();
+                result.innerHTML = `<p class="success">✅ 成功加载 ${data.length} 个Goals:</p>
+                                   <pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                result.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+
+        async function testEvents() {
+            const result = document.getElementById('data-result');
+            result.innerHTML = '<p>加载Events...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/events/today`);
+                const data = await response.json();
+                result.innerHTML = `<p class="success">✅ 成功加载 ${data.length} 个今日Events:</p>
+                                   <pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>`;
+            } catch (error) {
+                result.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+
+        async function testHealth() {
+            const result = document.getElementById('data-result');
+            result.innerHTML = '<p>加载Health数据...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/health/today`);
+                const data = await response.json();
+                result.innerHTML = `<p class="success">✅ Health数据加载成功:</p>
+                                   <pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                result.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+
+        async function testUpload() {
+            const fileInput = document.getElementById('test-file');
+            const result = document.getElementById('upload-result');
+
+            if (!fileInput.files[0]) {
+                result.innerHTML = '<p class="error">❌ 请先选择文件</p>';
+                return;
+            }
+
+            result.innerHTML = '<p>上传中...</p>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                const response = await fetch(`${API_BASE}/api/import`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.innerHTML = `<p class="success">✅ 上传成功！导入了 ${data.records_imported} 条记录</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">❌ 上传失败: ${data.error}</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+
+        // 页面加载时自动测试API
+        window.addEventListener('load', () => {
+            testAPI();
+        });
+    </script>
+</body>
+
+</html>
