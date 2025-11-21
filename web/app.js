@@ -661,7 +661,7 @@ async function loadHealthMetrics(dateString = null) {
             document.getElementById('metric-steps').textContent = '--';
         }
 
-        updateHealthChart();
+        updateHealthTrendsChart();
 
         // Load Weekly Report
         const reportData = await fetchReport();
@@ -724,6 +724,124 @@ function renderWeeklyReport(reportData) {
 function updateHealthChart() {
     // Placeholder for health chart
     // Can be implemented with historical health data
+}
+
+async function updateHealthTrendsChart() {
+    const ctx = document.getElementById('health-chart');
+    if (!ctx) return;
+
+    try {
+        // Fetch sleep score trends
+        const sleepResponse = await fetch(`${API_BASE}/api/health/trends?days=7&metric=sleep_score`);
+        const sleepData = await sleepResponse.json();
+
+        // Fetch steps trends
+        const stepsResponse = await fetch(`${API_BASE}/api/health/trends?days=7&metric=steps_total`);
+        const stepsData = await stepsResponse.json();
+
+        if (!sleepData || sleepData.length === 0) {
+            ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+            return;
+        }
+
+        const labels = sleepData.map(d => {
+            const date = new Date(d.date);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+
+        const chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Sleep Score',
+                    data: sleepData.map(d => d.value),
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Steps (÷100)',
+                    data: stepsData.map(d => d.value ? d.value / 100 : null),
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y'
+                }
+            ]
+        };
+
+        // Destroy existing chart if it exists
+        if (window.healthChartInstance) {
+            window.healthChartInstance.destroy();
+        }
+
+        window.healthChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#e2e8f0',
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#e2e8f0',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Score / Steps (÷100)',
+                            color: '#94a3b8'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error updating health trends chart:', error);
+    }
 }
 
 // ==================== CHARTS ====================
