@@ -483,9 +483,11 @@ def import_csv_data():
         import os
         from importer import parse_aggregated_data, parse_sport_records
         
-        with tempfile.NamedTemporaryFile(mode='w+b', delete=False, suffix='.csv') as tmp:
-            file.save(tmp.name)
-            tmp_path = tmp.name
+        # Create temp file and save uploaded file
+        tmp = tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.csv')
+        tmp_path = tmp.name
+        file.save(tmp_path)
+        tmp.close()  # Close to ensure file is written to disk
         
         try:
             # Parse based on filename
