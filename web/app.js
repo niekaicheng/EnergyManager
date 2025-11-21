@@ -1157,7 +1157,8 @@ function showLogEventModal() {
             goalSelect.innerHTML = '<option value="">None</option>';
             if (goalsCache && goalsCache.length > 0) {
                 goalsCache.forEach(goal => {
-                    if (goal.status === 'Active') {
+                    // API returns is_active (1 or true), checking that instead of status string
+                    if (goal.is_active) {
                         const option = document.createElement('option');
                         option.value = goal.goal_id;
                         option.textContent = `${goal.goal_name} (P${goal.priority_level})`;
