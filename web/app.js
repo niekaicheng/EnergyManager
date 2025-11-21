@@ -603,11 +603,11 @@ async function loadPlan() {
                             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
                                 <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${index + 1}</span>
                                 <span class="goal-priority p${item.priority}" style="padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">[P${item.priority}]</span>
-                                <span style="font-size: 1.1rem; font-weight: 600;">${item.goal_name}</span>
+                                <span style="font-size: 1.1rem; font-weight: 600;">${item.goal}</span>
                             </div>
                             <div style="margin-left: 50px; color: var(--text-secondary); font-size: 0.9rem;">
-                                <div>Cost: <span style="color: ${item.energy_cost >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">${item.energy_cost >= 0 ? '+' : ''}${item.energy_cost}</span> points</div>
-                                <divRemaining budget after: <strong>${item.remaining_budget}</strong> points</div>
+                                <div>Cost: <span style="color: ${item.cost >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">${item.cost >= 0 ? '+' : ''}${item.cost}</span> points</div>
+                                <div>Remaining budget after: <strong>${item.remaining_budget}</strong> points</div>
                             </div>
                         </div>
                     </div>
