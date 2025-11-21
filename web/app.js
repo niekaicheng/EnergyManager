@@ -1363,4 +1363,6 @@ window.showLogEventModal = showLogEventModal;
 window.showImportDataModal = showImportDataModal;
 window.closeModal = closeModal;
 window.logEvent = logEvent;
+window.importData = importData;
 window.fetchGoals = fetchGoals;
+

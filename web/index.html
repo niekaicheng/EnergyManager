@@ -547,7 +547,7 @@
                 <h3>Import Health Data</h3>
                 <button class="close-btn" onclick="closeModal('import-data-modal')">&times;</button>
             </div>
-            <form id="import-data-form" onsubmit="importData(event)">
+            <form id="import-data-form" onsubmit="importData(event)" novalidate>
                 <div class="file-upload-area">
                     <input type="file" id="data-file" accept=".csv,.json" required>
                     <div class="upload-placeholder">
