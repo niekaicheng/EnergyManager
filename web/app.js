@@ -1141,19 +1141,30 @@ function showLogEventModal() {
     const modal = document.getElementById('log-event-modal');
     if (!modal) return;
 
-    // Populate goal dropdown
-    const goalSelect = document.getElementById('event-goal');
-    if (goalSelect) {
-        goalSelect.innerHTML = '<option value="">None</option>';
-        if (typeof goalsCache !== 'undefined' && goalsCache.length > 0) {
-            goalsCache.forEach(goal => {
-                if (goal.status === 'Active') {
-                    const option = document.createElement('option');
-                    option.value = goal.goal_id;
-                    option.textContent = `${goal.goal_name} (P${goal.priority_level})`;
-                    goalSelect.appendChild(option);
-                }
-            });
+    // Ensure goals are loaded
+    if (!goalsCache || goalsCache.length === 0) {
+        fetchGoals().then(goals => {
+            goalsCache = goals;
+            populateGoalDropdown();
+        }).catch(err => console.error('Error loading goals for modal:', err));
+    } else {
+        populateGoalDropdown();
+    }
+
+    function populateGoalDropdown() {
+        const goalSelect = document.getElementById('event-goal');
+        if (goalSelect) {
+            goalSelect.innerHTML = '<option value="">None</option>';
+            if (goalsCache && goalsCache.length > 0) {
+                goalsCache.forEach(goal => {
+                    if (goal.status === 'Active') {
+                        const option = document.createElement('option');
+                        option.value = goal.goal_id;
+                        option.textContent = `${goal.goal_name} (P${goal.priority_level})`;
+                        goalSelect.appendChild(option);
+                    }
+                });
+            }
         }
     }
 
@@ -1166,6 +1177,13 @@ function showLogEventModal() {
     if (timeInput) timeInput.value = now.toTimeString().slice(0, 5);
 
     modal.style.display = 'flex';
+}
+
+function showImportDataModal() {
+    const modal = document.getElementById('import-data-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
 }
 
 function closeModal(modalId) {
@@ -1221,6 +1239,7 @@ async function logEvent(event) {
 
 // Make functions global
 window.showLogEventModal = showLogEventModal;
+window.showImportDataModal = showImportDataModal;
 window.closeModal = closeModal;
 window.logEvent = logEvent;
 window.fetchGoals = fetchGoals;
