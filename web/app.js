@@ -1033,7 +1033,7 @@ async function importData(event) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch(`${API_BASE}/api/health/import`, {
+        const response = await fetch(`${API_BASE}/api/import`, {
             method: 'POST',
             body: formData
         });
