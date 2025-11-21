@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
@@ -472,213 +471,8 @@
                         <p class="text-muted">Loading report...</p>
                     </div>
                 </div>
-                <button class="close-btn" onclick="closeModal('import-data-modal')">&times;</button>
             </div>
-            <form id="import-data-form" onsubmit="importData(event)">
-                <div class="file-upload-area">
-                    <input type="file" id="data-file" accept=".csv,.json" required>
-                    <div class="upload-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                            <polyline points="17 8 12 3 7 8" />
-                            <line x1="12" y1="3" x2="12" y2="15" />
-                        </svg>
-                        <p>Click to upload or drag and drop</p>
-                        <small>Supported formats: CSV, JSON</small>
-                    </div>
-                </div>
-                <div id="file-preview" class="file-preview"></div>
-                <div class="modal-actions">
-                    <div id="trends-page" class="page">
-                        <header class="page-header">
-                            <div>
-                                <h2>Energy Trends</h2>
-                                <p class="subtitle">Analyze your energy patterns over time</p>
-                            </div>
-                            <div class="header-actions">
-                                <div class="select-wrapper">
-                                    <select id="trends-days-select" onchange="loadTrends(this.value)">
-                                        <option value="7">Last 7 Days</option>
-                                        <option value="14" selected>Last 14 Days</option>
-                                        <option value="30">Last 30 Days</option>
-                                    </select>
-                                </div>
-                                <button class="btn-primary"
-                                    onclick="loadTrends(document.getElementById('trends-days-select').value)">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path
-                                            d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
-                                    </svg>
-                                    Refresh
-                                </button>
-                            </div>
-                        </header>
-
-                        <div id="trends-content">
-                            <div class="charts-grid" style="margin-bottom: 2rem;">
-                                <div class="chart-card">
-                                    <div class="chart-header">
-                                        <h3>Energy Balance Trend</h3>
-                                    </div>
-                                    <div class="chart-container">
-                                        <canvas id="trends-balance-chart"></canvas>
-                                    </div>
-                                </div>
-                                <div class="chart-card">
-                                    <div class="chart-header">
-                                        <h3>Daily Activity Hours</h3>
-                                    </div>
-                                    <div class="chart-container">
-                                        <canvas id="trends-hours-chart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="trend-table-card">
-                                <h3>Detailed Daily Breakdown</h3>
-                                <div id="trend-table"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Health Page -->
-                    <div id="health-page" class="page">
-                        <header class="page-header">
-                            <div>
-                                <h2>Health Metrics</h2>
-                                <p class="subtitle">Monitor your physical and mental well-being</p>
-                            </div>
-                            <div class="header-actions">
-                                <div class="date-picker-container">
-                                    <input type="date" id="health-date-picker" class="date-input">
-                                </div>
-                                <div class="select-wrapper">
-                                    <select id="health-days-select" onchange="updateHealthChart()">
-                                        <option value="7">Last 7 Days</option>
-                                        <option value="14">Last 14 Days</option>
-                                        <option value="30">Last 30 Days</option>
-                                    </select>
-                                </div>
-                                <div class="select-wrapper">
-                                    <select id="health-metric-select" onchange="updateHealthChart()">
-                                        <option value="Sleep Score">Sleep Score</option>
-                                        <option value="RHR">Resting Heart Rate</option>
-                                        <option value="Stress">Stress Level</option>
-                                        <option value="Steps">Steps</option>
-                                    </select>
-                                </div>
-                                <button class="btn-primary" onclick="refreshHealth()">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path
-                                            d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
-                                    </svg>
-                                    Refresh
-                                </button>
-                            </div>
-                        </header>
-
-                        <div class="health-grid">
-                            <div class="metric-card">
-                                <div class="metric-icon sleep">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                                    </svg>
-                                </div>
-                                <div class="metric-value" id="metric-sleep-score">--</div>
-                                <div class="metric-label">Sleep Score</div>
-                                <div class="metric-detail" id="metric-sleep-hours">-- hours</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-icon heart">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path
-                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div class="metric-value" id="metric-rhr">--</div>
-                                <div class="metric-label">Resting Heart Rate</div>
-                                <div class="metric-detail" id="metric-hr-range">Range: --</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-icon stress">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                    </svg>
-                                </div>
-                                <div class="metric-value" id="metric-stress">--</div>
-                                <div class="metric-label">Stress Level</div>
-                                <div class="metric-detail" id="metric-stress-status">--</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-icon steps">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                                        <line x1="4" y1="22" x2="4" y2="15"></line>
-                                    </svg>
-                                </div>
-                                <div class="metric-value" id="metric-steps">--</div>
-                                <div class="metric-label">Daily Steps</div>
-                                <div class="metric-detail">Total steps</div>
-                            </div>
-                        </div>
-
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <h3>Health Trends</h3>
-                            </div>
-                            <div class="chart-container">
-                                <canvas id="health-chart"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Weekly Report Section -->
-                        <div style="margin-top: 30px;">
-                            <h3>Weekly Insights & Report</h3>
-                            <div id="weekly-report-content"
-                                style="margin-top: 15px; background: var(--bg-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
-                                <p class="text-muted">Loading report...</p>
-                            </div>
-                        </div>
-                        <button class="close-btn" onclick="closeModal('import-data-modal')">&times;</button>
-                    </div>
-                    <form id="import-data-form" onsubmit="importData(event)">
-                        <div class="file-upload-area">
-                            <input type="file" id="data-file" accept=".csv,.json" required>
-                            <div class="upload-placeholder">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="17 8 12 3 7 8" />
-                                    <line x1="12" y1="3" x2="12" y2="15" />
-                                </svg>
-                                <p>Click to upload or drag and drop</p>
-                                <small>Supported formats: CSV, JSON</small>
-                            </div>
-                        </div>
-                        <div id="file-preview" class="file-preview"></div>
-                        <div class="modal-actions">
-                            <button type="button" class="btn-secondary"
-                                onclick="closeModal('import-data-modal')">Cancel</button>
-                            <button type="submit" class="btn-primary">Import Data</button>
-                        </div>
-                    </form>
-                    <div id="import-progress" class="progress-container" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill"></div>
-                        </div>
-                        <p id="progress-text" class="progress-text">Uploading...</p>
-                    </div>
-                </div>
+        </main>
     </div>
 
     <!-- Add Goal Modal -->
@@ -741,8 +535,47 @@
                     <small>Negative for consumption, positive for recovery</small>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('edit-goal-modal')">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+                <form id="import-data-form" onsubmit="importData(event)">
+                    <div class="file-upload-area">
+                        <input type="file" id="data-file" accept=".csv,.json" required>
+                        <div class="upload-placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <p>Click to upload or drag and drop</p>
+                            <small>Supported formats: CSV, JSON</small>
+                        </div>
+                    </div>
+                    <div id="file-preview" class="file-preview"></div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary"
+                            onclick="closeModal('import-data-modal')">Cancel</button>
+                        <button type="submit" class="btn-primary">Import Data</button>
+                    </div>
+                </form>
+                <div id="import-progress" class="progress-container" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p id="progress-text" class="progress-text">Uploading...</p>
+                </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="app.js"></script>
+    <script src="calendar.js"></script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<script src="app.js"></script>
+<script src="calendar.js"></script>
 </body>
 
 </html>

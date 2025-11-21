@@ -22,22 +22,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Navigation
 function initializeNavigation() {
+    console.log('[Navigation] Initializing...');
     const navItems = document.querySelectorAll('.nav-item');
+    console.log(`[Navigation] Found ${navItems.length} nav items`);
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = item.dataset.page;
-            navigateToPage(page);
+            if (item.dataset.page) {
+                console.log('[Navigation] Clicked:', item.dataset.page);
+                e.preventDefault();
+                const page = item.dataset.page;
+                navigateToPage(page);
+            }
         });
     });
 }
 
 function navigateToPage(page) {
+    console.log('[Navigation] Navigating to:', page);
     // Update navigation
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    document.querySelector(`[data-page="${page}"]`).classList.add('active');
+    const activeNav = document.querySelector(`[data-page="${page}"]`);
+    if (activeNav) {
+        activeNav.classList.add('active');
+    } else {
+        console.error(`[Navigation] Nav item for ${page} not found`);
+    }
 
     // Update page content
     document.querySelectorAll('.page').forEach(p => {
@@ -1212,3 +1223,4 @@ async function logEvent(event) {
 window.showLogEventModal = showLogEventModal;
 window.closeModal = closeModal;
 window.logEvent = logEvent;
+window.fetchGoals = fetchGoals;
