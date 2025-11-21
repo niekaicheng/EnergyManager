@@ -684,10 +684,12 @@ function updateHealthMetricsDisplay(health) {
     document.getElementById('metric-stress').textContent = health.stress_avg || '--';
     const stressLevel = health.stress_avg;
     let stressStatus = 'Unknown';
-    if (stressLevel < 25) stressStatus = 'Low';
-    else if (stressLevel < 50) stressStatus = 'Normal';
-    else if (stressLevel < 75) stressStatus = 'Elevated';
-    else stressStatus = 'High';
+    if (stressLevel && stressLevel > 0) {
+        if (stressLevel < 25) stressStatus = 'Low';
+        else if (stressLevel < 50) stressStatus = 'Normal';
+        else if (stressLevel < 75) stressStatus = 'Elevated';
+        else stressStatus = 'High';
+    }
     document.getElementById('metric-stress-status').textContent = stressStatus;
 
     document.getElementById('metric-steps').textContent = health.steps_total || '--';
