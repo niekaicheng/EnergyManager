@@ -508,40 +508,7 @@
         </div>
     </div>
 
-    <!-- Edit Goal Modal -->
-    <div id="edit-goal-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Edit Goal</h3>
-                <button class="close-btn" onclick="closeModal('edit-goal-modal')">&times;</button>
-            </div>
-            <form id="edit-goal-form" onsubmit="updateGoal(event)">
-                <input type="hidden" id="edit-goal-id">
-                <div class="form-group">
-                    <label for="edit-goal-name">Goal Name</label>
-                    <input type="text" id="edit-goal-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-goal-priority">Priority Level</label>
-                    <select id="edit-goal-priority" required>
-                        <option value="1">P1 - High Priority</option>
-                        <option value="2">P2 - Medium Priority</option>
-                        <option value="3">P3 - Low Priority</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="edit-goal-cost">Energy Cost (per hour)</label>
-                    <input type="number" id="edit-goal-cost" required min="-10" max="10">
-                    <small>Negative for consumption, positive for recovery</small>
-                </div>
-                <div class="modal-actions">
-                </div>
-
-        </div>
-    </div>
-
-
-    <div id="import-data-modal" class="modal">
+        <div id="import-data-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Import Health Data</h3>

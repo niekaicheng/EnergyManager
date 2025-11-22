@@ -1,0 +1,177 @@
+# Script to rebuild complete index.html with all pages and modals
+html_content = '''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Manager - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="enhanced.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" stroke="url(#gradient)" stroke-width="2" />
+                        <path d="M16 8 L16 16 L22 16" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" />
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1" />
+                                <stop offset="100%" style="stop-color:#8b5cf6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <h1>Energy Manager</h1>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg><span>Dashboard</span></a>
+                <a href="#goals" class="nav-item" data-page="goals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg><span>Goals</span></a>
+                <a href="#journal" class="nav-item" data-page="journal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Journal</span></a>
+                <a href="#plan" class="nav-item" data-page="plan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg><span>Plan</span></a>
+                <a href="#trends" class="nav-item" data-page="trends"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg><span>Trends</span></a>
+                <a href="#health" class="nav-item" data-page="health"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg><span>Health</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3-7 8-7s8 3 8 7" /></svg></div>
+                    <div class="user-details"><div class="user-name">User</div><div class="user-status">Active</div></div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header"><h2>Dashboard</h2></div>
+                <div id="dashboard-content"><p class="text-muted">Loading dashboard...</p></div>
+            </div>
+            
+            <!-- Goals Page -->
+            <div id="goals-page" class="page">
+                <div class="page-header">
+                    <h2>Goals Management</h2>
+                    <button class="btn-primary" onclick="showAddGoalModal()">+ Add Goal</button>
+                </div>
+                <div id="goals-content"><p class="text-muted">Loading goals...</p></div>
+            </div>
+            
+            <!-- Journal Page -->
+            <div id="journal-page" class="page">
+                <div class="page-header">
+                    <h2>Daily Journal</h2>
+                    <button class="btn-primary" onclick="showLogEventModal()">+ Log Event</button>
+                </div>
+                <div id="calendar-container"></div>
+            </div>
+            
+            <!-- Plan Page -->
+            <div id="plan-page" class="page">
+                <div class="page-header"><h2>Daily Plan</h2></div>
+                <div id="plan-content"><p class="text-muted">Loading plan...</p></div>
+            </div>
+            
+            <!-- Trends Page -->
+            <div id="trends-page" class="page">
+                <div class="page-header"><h2>Trends & Analytics</h2></div>
+                <div id="trends-content"><p class="text-muted">Loading trends...</p></div>
+            </div>
+            
+            <!-- Health Page -->
+            <div id="health-page" class="page">
+                <div class="page-header"><h2>Health Metrics</h2><button class="btn-primary" onclick="showImportDataModal()">+ Import Data</button></div>
+                <div id="health-content"><p class="text-muted">Loading health data...</p></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Add Goal Modal -->
+    <div id="add-goal-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Add New Goal</h3><button class="close-btn" onclick="closeModal('add-goal-modal')">&times;</button></div>
+            <form id="add-goal-form" onsubmit="addGoal(event)">
+                <div class="form-group"><label for="goal-name">Goal Name</label><input type="text" id="goal-name" required placeholder="e.g., Learn Python"></div>
+                <div class="form-group"><label for="goal-priority">Priority Level</label><select id="goal-priority" required><option value="1">P1 - High Priority</option><option value="2">P2 - Medium Priority</option><option value="3">P3 - Low Priority</option></select></div>
+                <div class="form-group"><label for="goal-cost">Energy Cost (per hour)</label><input type="number" id="goal-cost" required placeholder="-10 to +10" min="-10" max="10"><small>Negative for consumption, positive for recovery</small></div>
+                <div class="modal-actions"><button type="button" class="btn-secondary" onclick="closeModal('add-goal-modal')">Cancel</button><button type="submit" class="btn-primary">Add Goal</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Goal Modal -->
+    <div id="edit-goal-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Edit Goal</h3><button class="close-btn" onclick="closeModal('edit-goal-modal')">&times;</button></div>
+            <form id="edit-goal-form" onsubmit="updateGoal(event)">
+                <input type="hidden" id="edit-goal-id">
+                <div class="form-group"><label for="edit-goal-name">Goal Name</label><input type="text" id="edit-goal-name" required></div>
+                <div class="form-group"><label for="edit-goal-priority">Priority Level</label><select id="edit-goal-priority" required><option value="1">P1 - High Priority</option><option value="2">P2 - Medium Priority</option><option value="3">P3 - Low Priority</option></select></div>
+                <div class="form-group"><label for="edit-goal-cost">Energy Cost (per hour)</label><input type="number" id="edit-goal-cost" required min="-10" max="10"><small>Negative for consumption, positive for recovery</small></div>
+                <div class="modal-actions"><button type="button" class="btn-secondary" onclick="closeModal('edit-goal-modal')">Cancel</button><button type="submit" class="btn-primary">Update Goal</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Log Event Modal -->
+    <div id="log-event-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Log New Event</h3><button class="close-btn" onclick="closeModal('log-event-modal')">&times;</button></div>
+            <form id="log-event-form" onsubmit="logEvent(event)">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group"><label for="event-date">Date</label><input type="date" id="event-date" required></div>
+                    <div class="form-group"><label for="event-time">Time</label><input type="time" id="event-time" required></div>
+                </div>
+                <div class="form-group"><label for="event-activity">Activity</label><input type="text" id="event-activity" required placeholder="What did you do?"></div>
+                <div class="form-group"><label for="event-duration">Duration (minutes)</label><input type="number" id="event-duration" required min="1" placeholder="e.g., 60"></div>
+                <div class="form-group"><label for="event-goal">Linked Goal (Optional)</label><select id="event-goal"><option value="">None</option></select></div>
+                <div class="form-group"><label for="event-state">Energy State</label><select id="event-state" required><option value="Consumption">Consumption</option><option value="Internal friction">Internal Friction</option><option value="Growth">Growth</option><option value="Abundance">Abundance</option><option value="Routine">Routine</option></select></div>
+                <div class="scores-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                    <div class="form-group"><label for="event-physical">Physical (1-10)</label><input type="number" id="event-physical" min="1" max="10" value="5"></div>
+                    <div class="form-group"><label for="event-mental">Mental (1-10)</label><input type="number" id="event-mental" min="1" max="10" value="5"></div>
+                    <div class="form-group"><label for="event-emotional">Emotional (1-10)</label><input type="number" id="event-emotional" min="1" max="10" value="5"></div>
+                </div>
+                <div class="form-group"><label for="event-notes">Notes (Optional)</label><textarea id="event-notes" rows="3" placeholder="Any additional notes..."></textarea></div>
+                <div class="modal-actions"><button type="button" class="btn-secondary" onclick="closeModal('log-event-modal')">Cancel</button><button type="submit" class="btn-primary">Log Event</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Import Data Modal -->
+    <div id="import-data-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Import Health Data</h3><button class="close-btn" onclick="closeModal('import-data-modal')">&times;</button></div>
+            <form id="import-data-form" onsubmit="importData(event)">
+                <div class="file-upload-area">
+                    <input type="file" id="data-file" accept=".csv,.json" required>
+                    <div class="upload-placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                        <p>Click to upload or drag and drop</p>
+                        <small>Supported formats: CSV, JSON</small>
+                    </div>
+                </div>
+                <div id="file-preview" class="file-preview"></div>
+                <div class="modal-actions"><button type="button" class="btn-secondary" onclick="closeModal('import-data-modal')">Cancel</button><button type="submit" class="btn-primary">Import Data</button></div>
+            </form>
+            <div id="import-progress" class="progress-container" style="display: none;">
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                <p id="progress-text" class="progress-text">Uploading...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="app.js?v=3"></script>
+    <script src="calendar.js"></script>
+</body>
+</html>'''
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+print("HTML file created successfully!")
